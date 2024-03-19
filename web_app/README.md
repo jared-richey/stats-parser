@@ -1,7 +1,7 @@
 # Web App Documentation  
 
 **Web App information**  
-_Prerequisites_ Ubuntu or linux OS with [python3](https://docs.python-guide.org/starting/install3/linux/) installed.  
+_Prerequisites_ Ubuntu or linux OS with [python3](https://docs.python-guide.org/starting/install3/linux/) installed. Also, assumes that [docker](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers) & [docker compose](https://docs.docker.com/compose/gettingstarted/) have also been installed in order to build and run the web app locally.  
 
 * Check your python & pip versions: `python3 --version` & `pip3 --version`  
 * Download django package: `pip3 install django`  
