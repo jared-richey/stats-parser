@@ -36,7 +36,7 @@ def bubbleSort(arr):
 
 try:
     # Attempt to open and read from the file
-    with open('soccer_lines.html','r') as file_object:
+    with open('soccer_stats.html','r') as file_object:
         body = file_object.read()
 
 except FileNotFoundError:
@@ -58,13 +58,13 @@ tag = doc('.Card.gameModules')
 for date in doc('.Card__Header.Card__Header--presby.SBCardHeader').items():
     today = date.text()
 
-print("<!DOCTYPE html><html><head><title>DailyLines</title><style>")
+print("<!DOCTYPE html><html><head><title>Daily Stats</title><style>")
 print("body,h1,h5 {font-family: sans-serif}")
 print("body, html {height: 100%}")
 print("body, html {background-color: whitesmoke;}")
 print("</style></head><body><div><p>")
 
-print("<p><b>DAILY LINES FOR: " + str(today) + "</b></p>\n")
+print("<p><b>DAILY STATS FOR: " + str(today) + "</b></p>\n")
 
 teams = []
 odds = []
@@ -81,10 +81,10 @@ for odd in doc('.Odds__Message').items():
 
 if i >= 30:
     loops = 30
-    print("<p><b>Top 30 Matches & Lines under 200</b></p>\n")
+    print("<p><b>Top 30 Matches & Stats between 200 and 400</b></p>\n")
 elif i < 30:
     loops = i
-    print("<p><b>Top " + str(i) + " Matches & Lines under 200</b></p>\n")
+    print("<p><b>Top " + str(i) + " Matches & Stats between 200 and 400</b></p>\n")
 else:
     print("<p><i>No teams to bet</i></p>\n")
 
@@ -108,7 +108,7 @@ for k in range(0,loops):
     pattern = r"\d+"
     match = re.search(pattern, odds_sorted[k])
     positive_ml = abs(int(match.group()))
-    if positive_ml >= 200:
+    if positive_ml >= 200 and positive_ml <= 400:
         print("<tr><td>" + str(odds_sorted[k]) + "</tr></td>")
 
 print("<tr><td><b>----------MATCHES----------</b></td></tr>")
@@ -123,5 +123,5 @@ print('</p></div><div><table><tr><td><img src = \
     "https://a.espncdn.com/redesign/assets/img/logos/espn-404@2x.png">')
 print('</td></tr></table><p><a href = \
     "https://www.espn.com/soccer/scoreboard"> \
-    ESPN Soccer Daily Lines </a>')
+    ESPN Soccer Daily Stats </a>')
 print("</p></div></body></html>")

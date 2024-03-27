@@ -63,7 +63,7 @@ def print_stats(array, chunk_size=5):
 
 try:
     # Attempt to open and read from the file
-    with open('basketball_lines.html','r') as file_object:
+    with open('basketball_stats.html','r') as file_object:
         body = file_object.read()
 
 except FileNotFoundError:
@@ -82,16 +82,19 @@ except Exception as e:
 doc = pq(body)
 tag = doc('.margin-date')
 
+today = []
 for date in doc('.Table__Title.margin-subtitle').items():
-    today = date.text()
+    today.append(date.text())
 
-print("<!DOCTYPE html><html><head><title>DailyLines</title><style>")
+print("<!DOCTYPE html><html><head><title>Daily Stats</title><style>")
 print("body,h1,h5 {font-family: sans-serif}")
 print("body, html {height: 100%}")
 print("body, html {background-color: whitesmoke;}")
 print("</style></head><body><div><p>")
 
-print("<p><b>DAILY LINES FOR: " + str(today) + "</b></p>\n")
+print("<p><b>DAILY STATS FOR: </b></p>\n")
+for day in today:
+    print("<p><b>" +str(day) + "</b></p>\n")
 
 stats = []
 for td in doc('table tr td').items():
@@ -103,5 +106,5 @@ print('</p></div><div><table><tr><td><img src = \
     "https://a.espncdn.com/redesign/assets/img/logos/espn-404@2x.png">')
 print('</td></tr></table><p><a href = \
     "https://www.espn.com/mens-college-basketball/lines"> \
-    ESPN Mens College Basketball Daily Lines </a>')
+    ESPN Mens College Basketball Daily Stats </a>')
 print("</p></div></body></html>")
