@@ -7,7 +7,7 @@ SCRIPT_PATH=$(readlink -f "$0")
 my_dir=$(dirname "$SCRIPT_PATH")
 
 url="https://www.espn.com/soccer/scoreboard"
-input_file="$my_dir/soccer_lines.html"
+input_file="$my_dir/soccer_stats.html"
 
 echo "Checking status code" 
 response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-type: text/html" $url)
