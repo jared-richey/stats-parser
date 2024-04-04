@@ -1,5 +1,5 @@
 from django.urls import path
-from lines import views
+from stats import views
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
 

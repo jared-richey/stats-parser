@@ -24,11 +24,11 @@ def bubbleSort(arr):
             # can just exit the main loop.
             return
 
-def print_stats(array, chunk_size=5):
+def print_stats(array, chunk_size=6):
 
     teams = []
     n = len(array)
-    if n%5==0:
+    if n%6==0:
         for i in range(0, len(array), chunk_size):
             # Extract the current chunk of 5 elements
             current_chunk = array[i:i + chunk_size]
@@ -38,23 +38,17 @@ def print_stats(array, chunk_size=5):
         sys.exit(1)
 
     teams_to_bet = False
-    print("<p><b>Teams over 70% & Stats less than -400</b></p>\n")
+    print("<p><b>Teams with stats between -175 and -400</b></p>\n")
     print("<table><tbody>")
-
-    for team in teams:
-        if str(team[4]) != "--":
-            percentage_float = float(team[4].rstrip('%'))
-            team[4] = percentage_float
 
     bubbleSort(teams)
 
     for team in teams:
-        if str(team[3]) != "--":
-            positive_ml = abs(int(team[3]))
-            if (team[4] >= 70.0 and positive_ml <=400):
+        if str(team[4]) != "--":
+            positive_ml = int(team[4])
+            if (positive_ml <= -175 and positive_ml >= -400):
                 teams_to_bet = True
-                print("<tr><td>" + str(team[0]) + " " + str(team[2]) + " " \
-                    + str(team[3]) + " " + str(team[4]) + "%</td></tr>")
+                print("<tr><td>" + str(team[0]) + " " + str(team[4]) + "%</td></tr>")
 
     if not teams_to_bet:
         print("<tr><td><i>No teams to bet</i></td></tr>")
@@ -63,7 +57,7 @@ def print_stats(array, chunk_size=5):
 
 try:
     # Attempt to open and read from the file
-    with open('basketball_stats.html','r') as file_object:
+    with open('baseball_stats.html','r') as file_object:
         body = file_object.read()
 
 except FileNotFoundError:
@@ -105,6 +99,6 @@ print_stats(stats)
 print('</p></div><div><table><tr><td><img src = \
     "https://a.espncdn.com/redesign/assets/img/logos/espn-404@2x.png">')
 print('</td></tr></table><p><a href = \
-    "https://www.espn.com/mens-college-basketball/lines"> \
-    ESPN Mens College Basketball Daily Stats </a>')
+    "https://www.espn.com/mlb/lines"> \
+    ESPN MLB Daily Stats </a>')
 print("</p></div></body></html>")
