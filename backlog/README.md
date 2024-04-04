@@ -18,7 +18,7 @@ Tasks:
 __Target Completion Date:__ 4/19/24  
 
 > Title: Azure Administrator Associate certification   
-Acceptance Criteria:  
+Acceptance Criteria: Successful completion of the course learning and certification exam  
 Tasks:  
 1 Digital learning/on-line course  
 2 Udemy practice exam  
