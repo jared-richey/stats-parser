@@ -5,7 +5,7 @@
 > Title: AWS Cloud Practitioner certification  
 Acceptance Criteria: Successful completion of the course learning and certification exam  
 Tasks:  
-1 Digital learning/on-line course  
+1 ~~Digital learning/on-line course~~  
 2 Udemy practice exam  
 3 Take official certification test  
 __Target Completion Date:__ 4/12/24  
@@ -20,7 +20,7 @@ __Target Completion Date:__ 4/19/24
 > Title: Azure Administrator Associate certification   
 Acceptance Criteria: Successful completion of the course learning and certification exam  
 Tasks:  
-1 Digital learning/on-line course  
+1 ~~Digital learning/on-line course~~  
 2 Udemy practice exam  
 3 Take official certification test  
 __Target Completion Date__ 5/9/24  
