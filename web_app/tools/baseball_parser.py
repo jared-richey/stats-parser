@@ -48,7 +48,7 @@ def print_stats(array, chunk_size=6):
             positive_ml = int(team[4])
             if (positive_ml <= -175 and positive_ml >= -400):
                 teams_to_bet = True
-                print("<tr><td>" + str(team[0]) + " " + str(team[4]) + "%</td></tr>")
+                print("<tr><td>" + str(team[0]) + " " + str(team[4]) + "</td></tr>")
 
     if not teams_to_bet:
         print("<tr><td><i>No teams to bet</i></td></tr>")
