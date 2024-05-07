@@ -2,6 +2,7 @@
 
 from pyquery import PyQuery as pq
 import sys
+import requests
 
 def bubbleSort(arr):
     n = len(arr)
@@ -25,7 +26,6 @@ def bubbleSort(arr):
             return
 
 def print_stats(array, chunk_size=6):
-
     teams = []
     n = len(array)
     if n%6==0:
@@ -51,9 +51,47 @@ def print_stats(array, chunk_size=6):
                 print("<tr><td>" + str(team[0]) + " " + str(team[4]) + "</td></tr>")
 
     if not teams_to_bet:
-        print("<tr><td><i>No teams to bet</i></td></tr>")
+        print("<tr><td><i>No team stats</i></td></tr>")
 
     print("</tbody></table>\n")
+
+def write_to_file(file_path, content):
+    """
+    Write content to a file
+
+    :param file_path: Path to the file to write
+    :param content: Content to write to the file
+    :return: True if content was written successfully, else False
+    """
+
+    try:
+        with open(file_path, 'w') as file:
+            file.write(content)
+        return True
+    except Exception as e:
+        print(f"Error writing to file: {e}")
+        return False
+
+#make HTTP request
+url = 'https://www.espn.com/mlb/lines'
+headers = {
+    'Content-Type': 'text/html',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36'
+}
+
+response = requests.get(url, headers=headers)
+
+if response.status_code == 200:
+    file_path = "baseball_stats.html"
+    content = response.text
+
+    write_success = write_to_file(file_path, content)
+    if not write_success:
+        print("Failed to write content to file.")
+        sys.exit(1)
+
+else:
+    print("Request failed")
 
 try:
     # Attempt to open and read from the file
