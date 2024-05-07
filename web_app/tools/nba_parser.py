@@ -26,7 +26,6 @@ def bubbleSort(arr):
             return
 
 def print_stats(array, chunk_size=5):
-
     teams = []
     n = len(array)
     if n%5==0:
@@ -39,7 +38,7 @@ def print_stats(array, chunk_size=5):
         sys.exit(1)
 
     teams_to_bet = False
-    print("<p><b>Teams over 70% & Stats less than -400</b></p>\n")
+    print("<p><b>Teams with stats over 70% & less than -400</b></p>\n")
     print("<table><tbody>")
 
     for team in teams:
@@ -58,7 +57,7 @@ def print_stats(array, chunk_size=5):
                     + str(team[3]) + " " + str(team[4]) + "%</td></tr>")
 
     if not teams_to_bet:
-        print("<tr><td><i>No teams to bet</i></td></tr>")
+        print("<tr><td><i>No team stats</i></td></tr>")
 
     print("</tbody></table>\n")
 
@@ -80,7 +79,7 @@ def write_to_file(file_path, content):
         return False
 
 #make HTTP request
-url = 'https://www.espn.com/mens-college-basketball/lines'
+url = 'https://www.espn.com/nba/lines'
 headers = {
     'Content-Type': 'text/html',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36'
@@ -89,7 +88,7 @@ headers = {
 response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
-    file_path = "basketball_stats.html"
+    file_path = "nba_stats.html"
     content = response.text
 
     write_success = write_to_file(file_path, content)
@@ -100,9 +99,10 @@ if response.status_code == 200:
 else:
     print("Request failed")
 
+
 try:
     # Attempt to open and read from the file
-    with open('basketball_stats.html','r') as file_object:
+    with open('nba_stats.html','r') as file_object:
         body = file_object.read()
 
 except FileNotFoundError:
@@ -144,6 +144,6 @@ print_stats(stats)
 print('</p></div><div><table><tr><td><img src = \
     "https://a.espncdn.com/redesign/assets/img/logos/espn-404@2x.png">')
 print('</td></tr></table><p><a href = \
-    "https://www.espn.com/mens-college-basketball/lines"> \
-    ESPN Mens College Basketball Daily Stats </a>')
+    "https://www.espn.com/nba/lines"> \
+    ESPN NBA Daily Stats </a>')
 print("</p></div></body></html>")

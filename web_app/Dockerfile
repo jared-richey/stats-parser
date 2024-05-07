@@ -2,7 +2,7 @@ FROM python:3.10-alpine
 
 RUN apk add --update curl bash \
     && pip install --upgrade pip \
-    && pip install django pyquery \
+    && pip install django pyquery requests \
     && rm -rf /var/cache/apk/* \
 
 ENV PYTHONUNBUFFERED=1
