@@ -1,0 +1,205 @@
+import boto3
+from pyquery import PyQuery as pq
+import datetime
+import re
+import requests
+import sys
+
+def lambda_handler(event, context):
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print("Lambda function executed at:", current_time)
+
+def write_data_to_s3(bucket_name, file_key, data):
+    """
+    Write data to a file on S3
+
+    :param bucket_name: Name of the S3 bucket
+    :param file_key: Key (path) of the file in the bucket
+    :param data: Data to write to the file
+    """
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.put_object(Bucket=bucket_name, Key=file_key, Body=data, ContentType='text/html')
+        print("Data written to S3 file successfully:", response)
+    except Exception as e:
+        print(f"Error writing data to S3 file: {e}")
+
+def read_data_from_s3(bucket_name, file_key):
+    """
+    Read data from a file on S3
+
+    :param bucket_name: Name of the S3 bucket
+    :param file_key: Key (path) of the file in the bucket
+    :return: Content of the file as a string
+    """
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
+        file_content = response['Body'].read().decode('utf-8')
+        return file_content
+    except Exception as e:
+        print(f"Error reading data from S3 file: {e}")
+        return None
+        
+def bubbleSort(arr):
+    n = len(arr)
+    swapped = False
+    # Traverse through all array elements
+    for i in range(n-1):
+        # range(n) also work but outer loop will
+        # repeat one time more than needed.
+        # Last i elements are already in place
+        for j in range(0, n-i-1):
+            # traverse the array from 0 to n-i-1
+            # Swap if the element found is greater
+            # than the next element
+            pattern = r"\d+"
+            firstMatch = re.search(pattern, arr[j])
+            secondMatch = re.search(pattern, arr[j+1])
+
+            if (firstMatch and secondMatch):
+            # Extracting the matched pattern and converting it to an integer
+                firstNumber = abs(int(firstMatch.group()))
+                secondNumber = abs(int(secondMatch.group()))
+
+            if firstNumber < secondNumber:
+                swapped = True
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+         
+        if not swapped:
+            # if we haven't needed to make a single swap, we 
+            # can just exit the main loop.
+            return
+
+def print_stats(array,iter):
+    match = []
+    soccer_matches = []
+
+    for j in range(0,iter):
+        match = [teams[j],teams[j+1]]
+        soccer_matches.append(match)
+        # Removing merged elements
+        teams.remove(teams[j+1])
+
+    print("<table><tbody>")
+
+    string_results = []
+    for k in range(0,iter):
+        pattern = r"\d+"
+        match = re.search(pattern, array[k])
+        positive_ml = abs(int(match.group()))
+        if positive_ml >= 200 and positive_ml <= 400:
+            print("<tr><td>" + str(array[k]) + "</tr></td>")
+            string_stats = "<tr><td>" + str(array[k]) + "</tr></td>"
+            string_results.append(string_stats)
+
+    print("<tr><td><b>----------MATCHES----------</b></td></tr>")
+    matches_header = "<tr><td><b>----------MATCHES----------</b></td></tr>"
+
+    matches_list = []
+    for list_item in soccer_matches:
+        print("<tr><td>" + str(list_item[0]) + " vs. " + str(list_item[1]) + "</tr></td>")
+        string_teams = "<tr><td>" + str(list_item[0]) + " vs. " + str(list_item[1]) + "</tr></td>"
+        matches_list.append(string_teams)
+
+    results = "<table><tbody>" + ' '.join(map(str, string_results)) + matches_header + ' '.join(map(str, matches_list))
+    return(results)
+    
+#make HTTP request
+url = 'https://www.espn.com/soccer/scoreboard'
+headers = {
+    'Content-Type': 'text/html',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36'
+}
+
+response = requests.get(url, headers=headers)
+
+# S3 bucket and key where the file will be saved
+bucket_name = 'soccer-stats-incoming'
+file_key = 'soccer_stats.html' 
+
+if response.status_code == 200:
+    content = response.text
+
+   # Write data to the file on S3
+    write_data_to_s3(bucket_name, file_key, content)
+
+else:
+    print("Request failed")
+    sys.exit(1)
+    
+file_content = read_data_from_s3(bucket_name, file_key)
+
+doc = pq(file_content)
+tag = doc('.Card.gameModules')
+
+today = []
+for date in doc('.Card__Header.Card__Header--presby.SBCardHeader').items():
+    today.append(date.text())
+    
+string_header = """
+<!DOCTYPE html><html><head><title>Daily Stats</title><style>
+body,h1,h5 {font-family: sans-serif}
+body, html {height: 100%}")
+body, html {background-color: whitesmoke;}
+</style></head><body><div><p>
+<p><b>DAILY STATS FOR: </b></p>\n
+"""
+print("<!DOCTYPE html><html><head><title>Daily Stats</title><style>")
+print("body,h1,h5 {font-family: sans-serif}")
+print("body, html {height: 100%}")
+print("body, html {background-color: whitesmoke;}")
+print("</style></head><body><div><p>")
+print("<p><b>DAILY STATS FOR: " + str(today) + "</b></p>\n")
+
+teams = []
+odds = []
+
+for team in \
+    doc('.ScoreCell__TeamName.ScoreCell__TeamName--shortDisplayName.truncate.db').items():    
+    teams.append(team.text())
+
+i = 0
+for odd in doc('.Odds__Message').items():
+    trimmed_string = odd.text().split('\n', 1)[0]
+    odds.append(trimmed_string)
+    i += 1
+    
+if i >= 30:
+    loops = 30
+    top_message = "<p><b>Top 30 Matches & Stats between 200 and 400</b></p>\n"
+elif i < 30:
+    loops = i
+    top_message = "<p><b>Top " + str(i) + " Matches & Stats between 200 and 400</b></p>\n"
+else:
+    top_message = "<p><i>No teams to bet</i></p>\n"
+
+odds_sorted = []
+for i in range(0,loops):
+    odds_sorted.append(odds[i])
+
+bubbleSort(odds_sorted)
+
+dates = []
+for day in today:
+    string_date = "<p><b>" + str(day) + "</b></p>\n"
+    dates.append(string_date)
+
+string_footer = """
+</p></div><div><table><tr><td><img src = "https://a.espncdn.com/redesign/assets/img/logos/espn-404@2x.png">
+</td></tr></table><p><a href = "https://www.espn.com/soccer/scoreboard"> ESPN Soccer Daily Stats </a>
+</p></div></body></html>
+"""
+
+final_date = ' '.join(map(str, dates))
+#final_results = ' '.join(map(str, print_stats(odds_sorted,loops)))
+final_results = print_stats(odds_sorted,loops)
+    
+print("</tbody></table>\n")
+
+string_final = string_header + str(final_date) + "<p><b>Top 30 Matches & Stats between 200 and 400</b></p>\n" + str(final_results) + "</tbody></table>\n" + string_footer
+
+bucket_name = 'soccer-stats-outgoing'
+file_key = 'index.html'
+content = string_final
+write_data_to_s3(bucket_name, file_key, content)
